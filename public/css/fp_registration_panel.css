@@ -1,0 +1,15 @@
+.checkbox {
+	display: inline;
+	padding-right: 15px;
+}
+
+.register-btn {
+	font-size: 10pt;
+}
+.panel-heading #main-title {
+	padding: 10px 0;
+	font-size: 14pt;
+}
+.not-visible {
+	visibility: hidden;
+}

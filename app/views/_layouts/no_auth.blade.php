@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-@include('_layouts/_partials/header')
+@include('_layouts/_partials/header_no_auth')
 
 <body>
 

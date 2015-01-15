@@ -2,27 +2,7 @@
 
 @section('styles')
 
-<style>
-.back2login-btn {
-	margin-bottom: 10px;
-}
-
-.checkbox {
-	display: inline;
-	padding-right: 15px;
-}
-
-.register-btn {
-	font-size: 10pt;
-}
-.panel-heading #main-title {
-	padding: 10px 0;
-	font-size: 14pt;
-}
-.not-visible {
-	visibility: hidden;
-}
-</style>
+{{ HTML::style('css/fp_registration_panel.css') }}
 
 @stop
 
@@ -51,6 +31,7 @@
 					Register for FitFind
 				</h3>
 			</div>
+			<!-- /.panel-heading -->
 			<div class="panel-body">
 				{{ Form::open(['route' => 'auth.store', 'role' => 'form']) }}
 				<div class="form-group">
@@ -74,7 +55,7 @@
 					<label for="password_confirmation" class="sr-only">Confirm password</label>
 					{{ Form::password('password_confirmation', ['class' => 'form-control', 'placeholder' => 'Confirm password']) }}
 				</div>
-				{{ Form::submit('Register', ['class' => 'btn btn-default pull-right']) }}
+				{{ Form::submit('Register', ['class' => 'btn btn-primary pull-right']) }}
 				{{ Form::close() }}
 			</div>
 			<!-- /.panel-body -->

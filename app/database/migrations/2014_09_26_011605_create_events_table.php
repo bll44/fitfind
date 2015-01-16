@@ -19,7 +19,7 @@ class CreateEventsTable extends Migration {
 			$table->string('activity');
 			$table->integer('organizer_id');
 			$table->integer('max_participants')->nullable();
-			$table->tinyInteger('team_event', 1)->default(0);
+			$table->boolean('team_event')->default(0);
 			$table->dateTime('start_time');
 			$table->dateTime('end_time');
 			$table->integer('location')->nullable();

@@ -2,7 +2,8 @@
 
 Route::get('test', function()
 {
-	return Config::get('activities');
+	$team = Team::find(1);
+	return User::find($team->team_leader_id)->displayname;
 });
 
 Route::group(['before' => 'auth'], function()
@@ -45,7 +46,7 @@ Route::group(['before' => 'auth'], function()
 
 	// Team routes
 	Route::get('team/{team_id}/join', ['as' => 'team.join', 'uses' => 'TeamController@join']);
-	Route::get('teams/list_teams', ['as' => 'teams.list', 'uses' => 'TeamController@listTeams']);
+	Route::get('teams/browse', ['as' => 'teams.browse', 'uses' => 'TeamController@browse']);
 	Route::resource('teams', 'TeamController');
 
 	Route::get('{username}/friends', 'UserController@showFriends');

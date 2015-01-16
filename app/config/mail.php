@@ -54,7 +54,7 @@ return array(
 	|
 	*/
 
-	'from' => array('address' => 'fitfindpwdrecovery@gmail.com', 'name' => 'Team FitFind'),
+	'from' => array('address' => 'fitfind.info@gmail.com', 'name' => 'FitFind Information'),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -80,7 +80,7 @@ return array(
 	|
 	*/
 
-	'username' => 'fitfindpwdrecovery@gmail.com',
+	'username' => 'fitfind.info@gmail.com',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -93,7 +93,7 @@ return array(
 	|
 	*/
 
-	'password' => 'Info425!',
+	'password' => 'Info426!',
 
 	/*
 	|--------------------------------------------------------------------------

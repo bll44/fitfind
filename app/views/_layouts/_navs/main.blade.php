@@ -33,7 +33,7 @@
 					<ul class="dropdown-menu" role="menu">
 						<li>{{ link_to_route('teams.index', 'My Teams') }}</li>
 						<li>{{ link_to_route('teams.create', 'Create A Team') }}</li>
-						<li>{{ link_to_route('teams.list', 'Browse All Teams') }}</li>
+						<li>{{ link_to_route('teams.browse', 'Browse All Teams') }}</li>
 					</ul>
 				</li>
 			</ul>

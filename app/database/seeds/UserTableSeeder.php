@@ -7,26 +7,27 @@ class UserTableSeeder extends Seeder {
 		// allow mass assignment
 		Eloquent::unguard();
 
-		DB::table('users')->delete();
+		// delete all rows in users table
+		User::truncate();
+
 		$faker = Faker\Factory::create();
 		$genders = [null, 'male', 'female'];
 
-		for($i = 0; $i < 70; $i++)
+		for($i = 0; $i < 30; $i++)
 		{
-			$gender_index = array_rand($genders);
 			User::create([
 				'displayname' => $faker->name,
 				'username' => $faker->username,
 				'email' => $faker->email,
 				'password' => '1234',
-				'street1' => $faker->streetAddress,
-				'street2' => $faker->secondaryAddress,
+				'street' => $faker->streetAddress,
+				'unit' => $faker->secondaryAddress,
 				'city' => $faker->city,
 				'state' => $faker->state,
 				'zip' => $faker->postcode,
 				'dob' => $faker->date(),
-				'gender' => $genders[$gender_index],
-				'phone' => 7775559999,
+				'gender' => $genders[array_rand($genders)],
+				'phone' => 1234567890,
 				'notifyEmail' => $faker->boolean(50),
 				'notifyText' => $faker->boolean(50),
 				'created_at' => date('Y-m-d h:i:s'),

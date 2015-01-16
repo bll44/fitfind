@@ -9,16 +9,14 @@ class Team extends Eloquent {
 		return $this->belongsToMany('User');
 	}
 
-	public function createTeam()
-	{
-		$team = new Team;
-
-		$team->save();
-	}
-
 	public function events()
 	{
 		return $this->belongsToMany('App\Models\Event');
+	}
+
+	public function leader()
+	{
+		return $this->hasOne('TeamLeader');
 	}
 
 }

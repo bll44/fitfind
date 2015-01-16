@@ -10,13 +10,11 @@ class TeamController extends \BaseController {
 	 */
 	public function index()
 	{
-		$joined_teams = Auth::user()->teams;
+		$teams = Auth::user()->teams;
 
-		$team_leader = TeamLeader::find(Auth::user()->id);
-
-		$created_teams = $team_leader->teams;
-
-		return View::make('teams.my_teams', ['joined_teams' => $joined_teams, 'created_teams' => $created_teams, 'team_leader' => $team_leader]);
+		return View::make('teams.my_teams',
+			['teams' => $teams]
+		);
 	}
 
 
@@ -27,8 +25,7 @@ class TeamController extends \BaseController {
 	 */
 	public function create()
 	{
-		return View::make('teams.create_teams');
-
+		return View::make('teams.create');
 	}
 
 
@@ -40,29 +37,17 @@ class TeamController extends \BaseController {
 	public function store()
 	{
 		$team = new Team;
-		$name = Input::get('teamName');
-		$description = Input::get('teamDescription');
-		$lock_team = Input::get('lockTeam');
-		$team_leader = Auth::user()->id;
+		$name = Input::get('team_name');
+		$description = Input::get('team_description');
+		$user = Auth::user();
 
 		$team->name = $name;
 		$team->description = $description;
-		if($lock_team == 'yes')
-		{
-			$team->locked = 1;
-		}
-		else
-		{
-			$team->locked = 0;
-		}
-		$team->team_leader_id = $team_leader;
-
-		// DB::table('team_user')->insert(
-		//     array('team_id' => $team->id, 'user_id' => Auth::user()->id)
-		// );
+		$team->team_leader_id = $user->id;
 
 		$team->save();
 
+		$user->teams()->attach($team->id);
 
 		return Redirect::route('teams.index');
 	}
@@ -70,14 +55,19 @@ class TeamController extends \BaseController {
 	public function join($team_id)
 	{
 		$team = Team::find($team_id);
-		$user = Auth::user();
+		$candidate = Auth::user();
 		$teamLeader = TeamLeader::find($team->team_leader_id);
 
+		// create team join request record in database for approval
+		DB::insert("INSERT INTO team_join_requests (team_id, user_id)
+					VALUES (?, ?)", [$team->id, $candidate->id]);
+
+		// send an email notification to the team leader that there is a new candidate available for the team
 		Mail::send('emails.team_join_request',
-				  ['user' => $user, 'team' => $team, 'teamLeader' => $teamLeader],
-				  function($message) use ($user, $teamLeader)
+				  ['candidate' => $candidate, 'team' => $team, 'teamLeader' => $teamLeader],
+				  function($message) use ($candidate, $teamLeader)
 				  {
-			  	  	 $message->to($teamLeader->email, $teamLeader->displayname)->subject($user->displayname . ' wants to join your team.');
+			  	  	 $message->to($teamLeader->email, $teamLeader->displayname)->subject($candidate->displayname . ' wants to join your team.');
 				  });
 
 		return Redirect::route('teams.index');
@@ -95,11 +85,11 @@ class TeamController extends \BaseController {
 		//
 	}
 
-	public function listTeams()
+	public function browse()
 	{
 		$teams = Team::all();
 
-		return View::make('teams.list_teams', ['teams' => $teams]);
+		return View::make('teams.browse', ['teams' => $teams]);
 	}
 
 	/**

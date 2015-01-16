@@ -7,25 +7,24 @@ class TeamTableSeeder extends Seeder {
 		// allow mass assignment
 		Eloquent::unguard();
 
-		DB::table('teams')->delete();
+		// delete all rows in teams table
+		Team::truncate();
 		$faker = Faker\Factory::create();
 
 		$users = User::all();
 
 		$user_ids = [];
-		foreach($users as $u)
+		foreach($users as $user)
 		{
-			$user_ids[] = $u->id;
+			$user_ids[] = $user->id;
 		}
 
-		for($i = 0; $i < 70; $i++)
+		for($i = 0; $i < 30; $i++)
 		{
 			Team::create([
 				'name' => $faker->name,
 				'description' => $faker->text,
-				'max_players' => $faker->numberBetween(0, 20),
 				'team_leader_id' => array_rand($user_ids),
-				'locked' => rand(0, 1),
 				'created_at' => date('Y-m-d h:i:s'),
 				'updated_at' => date('Y-m-d h:i:s'),
 			]);

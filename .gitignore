@@ -1,21 +1,8 @@
-## Ignore all dot files
-.*
-.DS_Store
-
-## Exception dot files
-!.gitignore
-!.gitkeep
-!.editorconfig
-
-## Ignore composer
 /bootstrap/compiled.php
 /vendor
 composer.phar
 composer.lock
 .env.*.php
 .env.php
-
-# app storage
-/app/storage
-
+.DS_Store
 Thumbs.db

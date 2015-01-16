@@ -59,8 +59,8 @@ class TeamController extends \BaseController {
 		$teamLeader = TeamLeader::find($team->team_leader_id);
 
 		// create team join request record in database for approval
-		DB::insert("INSERT INTO team_join_requests (team_id, user_id)
-					VALUES (?, ?)", [$team->id, $candidate->id]);
+		DB::insert("INSERT INTO team_join_requests (team_id, user_id, created_at, updated_at)
+					VALUES (?, ?, NOW(), NOW())", [$team->id, $candidate->id]);
 
 		// send an email notification to the team leader that there is a new candidate available for the team
 		Mail::send('emails.team_join_request',

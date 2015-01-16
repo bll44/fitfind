@@ -12,8 +12,17 @@ class TeamController extends \BaseController {
 	{
 		$teams = Auth::user()->teams;
 
+		$team_ids = array();
+		foreach($teams as $team)
+		{
+			if($team->team_leader_id === Auth::user()->id)
+			{
+				$team_ids[] = $team->id;
+			}
+		}
+
 		return View::make('teams.my_teams',
-			['teams' => $teams]
+			compact('teams')
 		);
 	}
 

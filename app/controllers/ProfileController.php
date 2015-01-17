@@ -69,7 +69,8 @@ class ProfileController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		//
+		$user = User::with('Profile')->whereId($id)->first();
+		return $user;
 	}
 
 

@@ -10,7 +10,7 @@
 @foreach($teams as $team)
 <div class="panel panel-default">
 	<div class="panel-heading">
-		<h3 class="panel-title">{{ $team->name }}<span class="pull-right"><i class="fa fa-asterisk"></i> {{ User::find($team->team_leader_id)->displayname }}</span></h3>
+		<h3 class="panel-title">{{ link_to_route('teams.show', $team->name, [$team->id]) }}<span class="pull-right"><i class="fa fa-asterisk"></i> {{ User::find($team->team_leader_id)->displayname }}</span></h3>
 		{{ Form::hidden('team_id', $team->team_leader_id) }}
 	</div>
 	<div class="panel-body">

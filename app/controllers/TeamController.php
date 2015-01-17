@@ -84,7 +84,9 @@ class TeamController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		//
+		$team = Team::with('Members', 'Events')->whereId($id)->first();
+
+		return View::make('teams.show', ['team' => $team]);
 	}
 
 	public function browse()

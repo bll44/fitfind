@@ -5,3 +5,7 @@ body {
 .clearfix {
 	clear: both;
 }
+
+.italic {
+	font-style: italic;
+}

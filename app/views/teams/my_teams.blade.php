@@ -19,12 +19,12 @@
 			<div class="panel panel-default">
 			@if($team->team_leader_id === Auth::user()->id)
 			<div class="panel-heading">
-				<h3 class="panel-title">{{ $team->name }}<span class="pull-right"><i class="fa fa-asterisk"></i></span></h3>
+				<h3 class="panel-title">{{ link_to_route('teams.show', $team->name, [$team->id]) }}<span class="pull-right"><i class="fa fa-asterisk"></i></span></h3>
 			</div>
 			<!-- /.panel-heading -->
 			@else
 			<div class="panel-heading">
-				<h3 class="panel-title">{{ $team->name }}</h3>
+				<h3 class="panel-title">{{ link_to_route('teams.show', $team->name, [$team->id]) }}</h3>
 			</div>
 			@endif
 				<div class="panel-body">
@@ -32,7 +32,7 @@
 				</div>
 				<!-- /.panel-body -->
 				<div class="panel-footer">
-				{{ link_to('#', 'View Team Members') }}
+				{{ link_to_route('teams.show', 'View Team Members', [$team->id]) }}
 				</div>
 				<!-- /.panel-footer -->
 			</div>

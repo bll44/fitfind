@@ -2,8 +2,8 @@
 
 Route::get('test', function()
 {
-	$team = Team::find(1);
-	return User::find($team->team_leader_id)->displayname;
+	$user = User::with('Profile')->whereUsername('bradylatsha')->first();
+	return $user;
 });
 
 Route::group(['before' => 'auth'], function()
@@ -47,14 +47,16 @@ Route::group(['before' => 'auth'], function()
 	// Team routes
 	Route::get('team/{team_id}/join', ['as' => 'team.join', 'uses' => 'TeamController@join']);
 	Route::get('teams/browse', ['as' => 'teams.browse', 'uses' => 'TeamController@browse']);
+	Route::get('teams/get_request_approvals', ['as' => 'get.request_approvals', 'uses' => 'TeamController@getApprovalRequests']);
+	Route::get('teams/approvals/{approval_id}/{status}', ['as' => 'teams.approval.update', 'uses' => 'TeamController@updateApprovalRequest']);
 	Route::resource('teams', 'TeamController');
 
 	Route::get('{username}/friends', 'UserController@showFriends');
 	Route::get('{username}/friends/add/{friend_id}', 'UserController@addFriend');
 	Route::get('friends/search', 'UserController@search');
 
-	// Notification settings routes
-	Route::get('notifications/{user_id}/settings', ['as' => 'notifications.settings.show', 'uses' => 'NotificationsController@edit']);
+	// User profile routes
+	Route::resource('profile', 'ProfileController');
 });
 
 Route::group(['before' => 'guest'], function()

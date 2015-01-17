@@ -43,7 +43,7 @@
 						Hi, {{ Auth::user()->displayname }} <span class="caret"></span>
 					</a>
 					<ul class="dropdown-menu" role="menu">
-						<li>{{ link_to_route('notifications.settings.show', 'Notification Settings', [Auth::user()->id]) }}</li>
+						<li>{{ link_to_route('profile.show', 'Profile', [Auth::user()->username]) }}</li>
 						<li>{{ link_to_route('account.show', 'Account Settings', [Auth::user()->id]) }}</li>
 						<li>{{ link_to('auth/logout', 'Log out') }}</li>
 					</ul>

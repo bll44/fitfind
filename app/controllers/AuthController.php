@@ -92,7 +92,9 @@ class AuthController extends \BaseController {
 
 			if($this->user->save())
 			{
-				return $this->loginUser(true);
+				$profile = new Profile;
+				$profile->user_id = $this->user->id;
+				if($profile->save()) return $this->loginUser(true);
 			}
 		}
 		elseif($validator->fails())

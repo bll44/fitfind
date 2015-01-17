@@ -7,7 +7,7 @@
 
 @yield('styles')
 
-@include('_layouts/_navs/main')
+@include('_layouts/_navs/navigation')
 
 	<div class="container">
 

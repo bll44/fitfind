@@ -10,20 +10,11 @@ class TeamController extends \BaseController {
 	 */
 	public function index()
 	{
-		$teams = Auth::user()->teams;
+		$user = Auth::user();
+		$teams = $user->teams;
+		$approvals = $user->getApprovals();
 
-		$team_ids = array();
-		foreach($teams as $team)
-		{
-			if($team->team_leader_id === Auth::user()->id)
-			{
-				$team_ids[] = $team->id;
-			}
-		}
-
-		return View::make('teams.my_teams',
-			compact('teams')
-		);
+		return View::make('teams.my_teams',	compact('teams', 'approvals'));
 	}
 
 
@@ -68,16 +59,18 @@ class TeamController extends \BaseController {
 		$teamLeader = TeamLeader::find($team->team_leader_id);
 
 		// create team join request record in database for approval
-		DB::insert("INSERT INTO team_join_requests (team_id, user_id, created_at, updated_at)
+		DB::insert("INSERT INTO team_approvals (team_id, user_id, created_at, updated_at)
 					VALUES (?, ?, NOW(), NOW())", [$team->id, $candidate->id]);
 
 		// send an email notification to the team leader that there is a new candidate available for the team
-		Mail::send('emails.team_join_request',
-				  ['candidate' => $candidate, 'team' => $team, 'teamLeader' => $teamLeader],
-				  function($message) use ($candidate, $teamLeader)
-				  {
-			  	  	 $message->to($teamLeader->email, $teamLeader->displayname)->subject($candidate->displayname . ' wants to join your team.');
-				  });
+		Mail::send(
+			'emails.team_join_request',
+			['candidate' => $candidate, 'team' => $team, 'teamLeader' => $teamLeader],
+			function($message) use ($candidate, $teamLeader)
+			{
+				$message->to($teamLeader->email, $teamLeader->displayname)->subject($candidate->displayname . ' wants to join your team.');
+			}
+		);
 
 		return Redirect::route('teams.index');
 	}
@@ -96,7 +89,7 @@ class TeamController extends \BaseController {
 
 	public function browse()
 	{
-		$teams = Team::all();
+		$teams = Team::orderBy('created_at', 'DESC')->get();
 
 		return View::make('teams.browse', ['teams' => $teams]);
 	}
@@ -134,6 +127,33 @@ class TeamController extends \BaseController {
 	public function destroy($id)
 	{
 		//
+	}
+
+	public function getApprovalRequests()
+	{
+		$user = Auth::user();
+		$approvals = $user->getApprovals();
+
+		if(count($approvals) > 0)
+			$data = ['hasApprovals' => true, 'approvals' => $approvals];
+		else
+			$data = ['hasApprovals' => false];
+
+		return json_encode($data);
+	}
+
+	public function updateApprovalRequest($id, $status)
+	{
+		if($status === 'approve')
+		{
+			TeamApproval::find($id)->approve();
+		}
+		elseif($status === 'deny')
+		{
+			TeamApproval::find($id)->deny();
+		}
+
+		return Redirect::route('teams.index');
 	}
 
 }

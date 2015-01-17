@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTeamJoinRequestsTable extends Migration {
+class CreateProfilesTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,11 +12,12 @@ class CreateTeamJoinRequestsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('team_join_requests', function(Blueprint $table)
+		Schema::create('profiles', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->integer('team_id');
 			$table->integer('user_id');
+			$table->string('bio', 1000)->nullable();
+			$table->string('location')->nullable();
 			$table->timestamps();
 		});
 	}
@@ -28,7 +29,7 @@ class CreateTeamJoinRequestsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('team_join_requests');
+		Schema::drop('profiles');
 	}
 
 }

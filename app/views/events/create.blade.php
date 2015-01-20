@@ -30,7 +30,7 @@
 {{ Form::hidden('activity', null, ['id' => 'activity-input']) }}
 <div class="event-container">
 
-	<h1>Events</h1>
+	<h1>Create Event</h1>
 	@foreach($activities as $activity)
 	<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 activity">
 		<div class="activity-panel" id="{{ $activity }}" data-activity="{{ $activity }}" data-toggle="modal" data-target="#new-event-modal">
@@ -99,6 +99,16 @@
 					</div>
 					<!-- /.team-event-checkbox -->
 
+					<div class="form-group hidden" id="team-dropdown">
+						{{ Form::label('team', 'My Team') }}
+						<select name="team" class="form-control">
+							@foreach($teams as $team)
+							<option value="{{ $team->id }}">{{ $team->name }}</option>
+							@endforeach
+						</select>
+					</div>
+					<!-- /.form-group -->
+
 					<div class="form-group">
 						{{ Form::label('max_participants', 'Maximum Participants') }}
 						<input type="number" name="max_participants" class="form-control" id="max_participants-field" placeholder="Maximum Participants" min="1">
@@ -151,6 +161,18 @@ $('#new-event-modal').on('show.bs.modal', function(e) {
 	// set the modal title
 	$('#new-event-modal h4.modal-title').text(modalTitle);
 	$('#activity-field').val(activity);
+});
+
+$('#team-event-checkbox').change(function() {
+	var team_select = $('#team-dropdown');
+	if($(this).is(':checked'))
+	{
+		team_select.removeClass('hidden');
+	}
+	else if( ! $(this).is(':checked'))
+	{
+		team_select.addClass('hidden');
+	}
 });
 </script>
 @stop

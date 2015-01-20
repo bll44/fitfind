@@ -22,7 +22,7 @@ class CreateEventsTable extends Migration {
 			$table->boolean('team_event')->default(0);
 			$table->dateTime('start_time');
 			$table->dateTime('end_time');
-			$table->integer('location')->nullable();
+			$table->integer('venue_id');
 			$table->timestamps();
 		});
 	}

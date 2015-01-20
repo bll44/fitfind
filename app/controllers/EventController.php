@@ -52,10 +52,10 @@ class EventController extends \BaseController {
 		// List of Activities, will be pulled from the database in the future
 		$activities = Config::get('activities');
 
-		$users = User::all();
+		$teams = Team::where('team_leader_id', Auth::user()->id)->get();
 		$venues = Venue::all();
 		return View::make('events/create', ['activePage' => 'events', 'activities' => $activities,
-											'users' => $users, 'venues' => $venues]);
+											'teams' => $teams, 'venues' => $venues]);
 	}
 
 
@@ -66,6 +66,7 @@ class EventController extends \BaseController {
 	 */
 	public function store()
 	{
+		// return Input::all();
 		$validator = Validator::make(
 			Input::all(),
 			[
@@ -78,21 +79,37 @@ class EventController extends \BaseController {
 
 		if($validator->fails())
 		{
-			return Redirect::back()->withErrors();
+			return Redirect::back();
 		}
 
 		$event = new Event;
 		$event->activity = Input::get('activity');
 		$event->displayname = $event->activity;
-		$event->organizer_id = Input::get('organizer');
 		$event->max_participants = Input::get('max_participants');
-		$event->team_event = null !== Input::get('team_event') ? 1 : 0;
 		$event->start_time = Input::get('start_time');
 		$event->end_time = Input::get('end_time');
 		$event->venue_id = Input::get('venue');
 
+		if(Input::has('team_event'))
+		{
+			$team_id = Input::get('team');
+			$event->team_event = 1;
+			$event->organizer_id = $team_id;
+			$team = Team::find($team_id);
+		}
+		else
+		{
+			$event->team_event = 0;
+			$event->organizer_id = Auth::user()->id;
+		}
+
 		if($event->save())
 		{
+			if($event->team_event)
+				$event->teams()->attach($team->id);
+			else
+				$event->users()->attach(Auth::user()->id);
+
 			return View::make('events/created', ['event' => $event]);
 		}
 	}

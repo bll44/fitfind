@@ -17,28 +17,7 @@ class EventController extends \BaseController {
 	{
 		$events = Event::orderBy('start_time', 'ASC')->get();
 
-		$event_ids = array();
-		foreach(Auth::user()->events as $e)
-		{
-			$event_ids[] = $e->id;
-		}
-		$team_event_ids = array();
-		foreach(Auth::user()->teams as $team)
-		{
-			foreach($team->events as $event)
-			{
-				$team_event_ids[] = $event->id;
-			}
-		}
-		foreach(TeamLeader::find(Auth::user()->id)->teams as $team)
-		{
-			foreach($team->events as $event)
-			{
-				$team_event_ids[] = $event->id;
-			}
-		}
-
-		return View::make('events.index', ['events' => $events, 'event_ids' => $event_ids, 'team_event_ids' => $team_event_ids]);
+		return View::make('events.index', ['events' => $events]);
 	}
 
 

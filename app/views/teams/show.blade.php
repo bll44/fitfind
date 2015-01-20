@@ -83,13 +83,21 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title">
-					Team Events
+					Team's Events
 				</h3>
 			</div>
 			<!-- /.panel-heading -->
 			<div class="panel-body">
 				@if($team->events->count() < 1)
 				<p class="alert alert-warning">No events scheduled as of now.</p>
+				@else
+				@foreach($team->events as $event)
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<p>{{ link_to_route('event.show', $event->displayname, [$event->id]) }}</p>
+					</div>
+				</div>
+				@endforeach
 				@endif
 			</div>
 			<!-- /.panel-body -->

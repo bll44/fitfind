@@ -52,8 +52,9 @@ class TeamController extends \BaseController {
 		return Redirect::route('teams.index');
 	}
 
-	public function join($team_id)
+	public function join()
 	{
+		$team_id = Input::get('team');
 		$team = Team::find($team_id);
 		$candidate = Auth::user();
 		$teamLeader = TeamLeader::find($team->team_leader_id);
@@ -63,16 +64,14 @@ class TeamController extends \BaseController {
 					VALUES (?, ?, NOW(), NOW())", [$team->id, $candidate->id]);
 
 		// send an email notification to the team leader that there is a new candidate available for the team
-		Mail::send(
-			'emails.team_join_request',
-			['candidate' => $candidate, 'team' => $team, 'teamLeader' => $teamLeader],
+		Mail::send('emails.teams.join_request', ['candidate' => $candidate, 'team' => $team, 'teamLeader' => $teamLeader],
 			function($message) use ($candidate, $teamLeader)
 			{
 				$message->to($teamLeader->email, $teamLeader->displayname)->subject($candidate->displayname . ' wants to join your team.');
 			}
 		);
 
-		return Redirect::route('teams.index');
+		return json_encode(['status_code' => 200]);
 	}
 
 
@@ -91,7 +90,7 @@ class TeamController extends \BaseController {
 
 	public function browse()
 	{
-		$teams = Team::orderBy('created_at', 'DESC')->get();
+		$teams = Team::orderBy('created_at', 'DESC')->where('team_leader_id', '<>', Auth::user()->id)->get();
 
 		return View::make('teams.browse', ['teams' => $teams]);
 	}

@@ -18,7 +18,7 @@
 	</div>
 	<!-- /.panel-body -->
 	<div class="panel-footer">
-		<p>{{ link_to_route('team.join', 'Request To Join', [$team->id]) }}</p>
+		<button type="button" class="btn btn-default request-button" data-team-id="{{ $team->id }}">Request to Join This Team</button>
 	</div>
 	<!-- /.panel-footer -->
 </div>
@@ -26,3 +26,30 @@
 
 @stop
 
+@section('scripts')
+
+<script>
+
+$('.request-button').click(function() {
+	$(this).html('Sending Request <i class="fa fa-spin fa-circle-o-notch"></i>');
+	var team_id = $(this).data('team-id');
+	$.ajax({
+		url: "{{ URL::route('team.join') }}",
+		type: 'POST',
+		data: { team: team_id },
+		dataType: 'json',
+		context: this,
+		success: function(data) {
+			if(data.status_code === 200)
+			{
+				$(this).addClass('btn-success');
+				$(this).removeClass('btn-default');
+				$(this).html('Request Sent&nbsp;&nbsp;<i class="fa fa-check"></i>');
+			}
+		}
+	});
+});
+
+</script>
+
+@stop

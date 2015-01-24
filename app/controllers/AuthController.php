@@ -146,7 +146,6 @@ class AuthController extends \BaseController {
 
 	public function sendTempPassword()
 	{
-		global $email;
 		$email = Input::get('email');
 		$user = User::where('email', $email)->first();
 		$resetCode = uniqid();
@@ -162,11 +161,12 @@ class AuthController extends \BaseController {
 		$pr->tmp_password = $resetCode;
 		$pr->save();
 
-		Mail::send('emails.password_recovery.tmp_pwd_email', ['user' => $user, 'resetCode' => $resetCode], function($message)
-		{
-			global $email;
-			$message->to($email, null)->subject('Account Password Reset');
-		});
+		Mail::send('emails.password_recovery.tmp_pwd_email', ['user' => $user, 'resetCode' => $resetCode],
+			function($message) use ($email)
+			{
+				$message->to($email, null)->subject('Account Password Reset');
+			}
+		);
 		return Redirect::to('login');
 	}
 

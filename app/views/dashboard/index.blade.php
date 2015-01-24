@@ -68,3 +68,21 @@
 <!-- /.row -->
 
 @stop
+
+@section('scripts')
+
+<script>
+
+$(document).ready(function() {
+	var obj = {};
+
+	obj.patrick = 'test';
+
+	console.log(obj);
+
+	console.log(obj.patrick);
+});
+
+</script>
+
+@stop

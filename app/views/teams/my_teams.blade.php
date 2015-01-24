@@ -92,6 +92,7 @@ $('#request-approval-link').click(function(event) {
 		type: 'GET',
 		dataType: 'json'
 	}).done(function(data) {
+		$('.approval-rows').html('');
 		if(data.hasApprovals)
 		{
 			// make approvals table visible

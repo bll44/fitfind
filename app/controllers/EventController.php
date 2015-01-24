@@ -104,6 +104,11 @@ class EventController extends \BaseController {
 	{
 		$event = Event::find($id);
 
+		if($event->team_event && null !== Auth::user()->teams)
+		{
+			return Redirect::back()->with('no_teams_error', 'You must be on a team to see this event.');
+		}
+
 		$teams = array();
 		foreach(TeamLeader::find(Auth::user()->id)->teams as $team)
 		{
@@ -134,53 +139,22 @@ class EventController extends \BaseController {
 	public function showUserEvents($id)
 	{
 		$user = User::find($id);
-		$joined_events = $user->events;
+		$user_events = $user->events;
+		$user_teams = $user->teams;
 
-		$organizer = Organizer::find($id);
-		$created_events = $organizer->events;
-
-		$teamLeader = TeamLeader::find($id);
-
-		$joined_team_events = array();
-		$created_team_events = array();
-		// get joined team events
-		foreach($user->teams as $team)
+		$team_events = array();
+		foreach($user_teams as $team)
 		{
-			$joined_team_events[$team->name] = array();
-			$created_team_events[$team->name] = array();
-			foreach($team->events as $event)
-			{
-				if($event->organizer_id === $team->id)
-				{
-					$created_team_events[$team->name][] = $event;
-				}
-				else
-				{
-					$joined_team_events[$team->name][] = $event;
-				}
-			}
-		}
-		foreach($teamLeader->teams as $team)
-		{
-			foreach($team->events as $event)
-			{
-				if($event->organizer_id === $team->id)
-				{
-					$created_team_events[$team->name][] = $event;
-				}
-				else
-				{
-					$joined_team_events[$team->name][] = $event;
-				}
-			}
+			$team->{'events'} = $team->events;
+			$team->team_name = $team->name;
+			$team_events[] = $team;
 		}
 
-		return View::make('events.show_user_events', ['user' => $user,
-													  'created_events' => $created_events,
-													  'organizer' => $organizer,
-													  'joined_events' => $joined_events,
-													  'joined_team_events' => $joined_team_events,
-													  'created_team_events' => $created_team_events]);
+		return View::make('events.user_events',
+				['user' => $user,
+				 'team_events' => $team_events,
+				 'user_events' => $user_events]
+		);
 	}
 
 	/**

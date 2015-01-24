@@ -1,9 +1,33 @@
 <?php
 
-Route::get('test', function()
+Route::get('brady-test', function()
 {
-	$user = User::with('Profile')->whereUsername('bradylatsha')->first();
-	return $user;
+	$user = User::find(31);
+
+	$user_teams = $user->teams;
+
+	$team_events = array();
+	foreach($user_teams as $team)
+	{
+		$team->{'events'} = $team->events;
+		$team->team_name = $team->name;
+		$team_events[] = $team;
+	}
+
+	return $team_events;
+
+	foreach($team_events as $te)
+	{
+		echo $te->name . '<br>';
+		foreach($te->events as $event)
+		{
+			echo $event->displayname . '<br>';
+		}
+	}
+
+	return;
+	// return $team_events;
+
 });
 
 Route::group(['before' => 'auth'], function()
@@ -45,7 +69,7 @@ Route::group(['before' => 'auth'], function()
 	Route::resource('account', 'AccountController');
 
 	// Team routes
-	Route::get('team/{team_id}/join', ['as' => 'team.join', 'uses' => 'TeamController@join']);
+	Route::post('team/join', ['as' => 'team.join', 'uses' => 'TeamController@join']);
 	Route::get('teams/browse', ['as' => 'teams.browse', 'uses' => 'TeamController@browse']);
 	Route::get('teams/get_request_approvals', ['as' => 'get.request_approvals', 'uses' => 'TeamController@getApprovalRequests']);
 	Route::get('teams/approvals/{approval_id}/{status}', ['as' => 'teams.approval.update', 'uses' => 'TeamController@updateApprovalRequest']);

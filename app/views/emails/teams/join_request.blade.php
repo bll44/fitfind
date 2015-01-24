@@ -12,5 +12,3 @@
 <p>{{ $candidate->displayname }} would like to join your team '{{ $team->name }}'. Please sign in to FitFind to accept or deny this request.</p>
 
 @stop
-
-@stop

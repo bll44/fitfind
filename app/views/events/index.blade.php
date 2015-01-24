@@ -18,6 +18,14 @@
 
 <hr>
 
+@if(Session::has('no_teams_error'))
+
+<div class="alert alert-danger">
+<p>{{ Session::pull('no_teams_error') }}</p>
+</div>
+
+@endif
+
 @foreach($events as $event)
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">

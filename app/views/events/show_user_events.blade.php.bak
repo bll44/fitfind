@@ -1,0 +1,93 @@
+@extends('_layouts.master')
+
+@section('content')
+
+<h1>Events for {{ $user->displayname }}</h1>
+
+<div class="row">
+	<!-- Nav tabs -->
+	<ul class="nav nav-tabs" role="tablist" id="my-event-tab">
+		<li role="presentation" class="active"><a href="#individual-events" role="tab" data-toggle="tab">Individual</a></li>
+		<li role="presentation"><a href="#team-events" role="tab" data-toggle="tab">Team</a></li>
+	</ul>
+	<!-- /.nav-tabs -->
+</div>
+<!-- /.row -->
+
+<!-- Tab panes -->
+<div class="tab-content">
+
+	<!-- Team events -->
+	<div role="tabpanel" class="tab-pane active" id="team-events">
+		<h2>Team</h2>
+
+		@foreach($team_events as $te)
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">{{ $te->team_name }}</h3>
+			</div>
+			<!-- /.panel-heading -->
+			<div class="panel-body">
+				@foreach($te->events as $e)
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">{{ $e->displayname }}</h3>
+					</div>
+					<!-- /.panel-heading -->
+					<div class="panel-body">
+						<p>Max Players: {{ $e->max_participants }}</p>
+						<p>Start Time: {{ $e->f_startTime() }}</p>
+					</div>
+					<!-- /.panel-body -->
+				</div>
+				<!-- /.panel nested panel -->
+			</div>
+			<!-- /.panel-body -->
+		</div>
+		<!-- /.panel -->
+		@endforeach
+
+	</div>
+	<!-- /.tab-pane -->
+	<!-- / Team events -->
+
+	<!-- Individual events -->
+	<div role="tabpanel" class="tab-pane" id="individual-events">
+		<h2>Individual</h2>
+
+	{{--
+		@foreach($user_events as $u_event)
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">{{ $te->displayname }}</h3>
+			</div>
+			<!-- /.panel-heading -->
+			<div class="panel-body">
+				<p>Organizer: {{ $te->organizer->displayname }}</p>
+				<p>Max Participants: {{ $te->max_participants }}</p>
+				<p>Start Time: {{ $te->f_startTime() }}</p>
+				<p>End Time: {{ $te->f_endTime() }}</p>
+			</div>
+			<!-- /.panel-body -->
+		</div>
+		<!-- /.panel -->
+		@endforeach
+	--}}
+
+	</div>
+	<!-- /.tab-pane -->
+	<!-- / Individual events -->
+</div>
+<!-- /.tab-content -->
+
+@stop
+
+@section('scripts')
+
+<script>
+$(document).ready(function() {
+	$('#my-event-tab a[href="#individual-events"').tab('show');
+});
+</script>
+
+@stop

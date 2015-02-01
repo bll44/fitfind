@@ -1,178 +1,119 @@
 @extends('_layouts.master')
 
-@section('styles')
-
-<style>
-
-	.activity-panel {
-		border: 2px solid;
-		padding: 10px;
-		margin-top: 10px;
-		margin-bottom: 10px;
-		cursor: pointer;
-	}
-
-	.activity-panel:hover {
-		background-color: #f3f3f3;
-	}
-
-	.time-container div {
-		margin: 10px 0;
-	}
-
-</style>
-
-@stop
-
 @section('content')
 
-{{ Form::open(['route' => 'event.store', 'role' => 'form', 'id' => 'create-event-form']) }}
-{{ Form::hidden('activity', null, ['id' => 'activity-input']) }}
-<div class="event-container">
-
-	<h1>Create Event</h1>
-	@foreach($activities as $activity)
-	<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 activity">
-		<div class="activity-panel" id="{{ $activity }}" data-activity="{{ $activity }}" data-toggle="modal" data-target="#new-event-modal">
-			{{ $activity }}
-		</div>
+<div class="row">
+	<div class="col-lg-12">
+		<h2>Create a new event</h2>
 	</div>
-	@endforeach
-
+	<!-- /.column -->
 </div>
-<!-- /.event-container -->
+<!-- /.row -->
+<hr>
 
+<div class="row">
 
-<div class="modal fade" id="new-event-modal">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h4 class="modal-title">New [ACTIVITY] Event</h4>
-			</div>
-			<!-- /.modal-header -->
-			<div class="modal-body">
-				<div class="new-event-form-container">
-					{{ Form::open(['route' => 'event.store', 'role' => 'form', 'id' => 'new-event-form']) }}
-					{{ Form::hidden('organizer', Auth::user()->id) }}
-					<div class="form-group">
-						{{ Form::label('activity', 'Activity') }}
-						{{ Form::text('activity', null, ['class' => 'form-control',
-							'placeholder' => 'Activity',
-							'readonly' => 'readonly',
-							'id' => 'activity-field']) }}
-					</div>
-					<!-- /.form-group -->
+	<div class="col-lg-offset-1 col-md-offset-1 col-lg-6 col-md-6 col-sm-12 col-xs-12">
 
-					<div class="form-group">
-						{{ Form::label('organizer', 'Organizer') }}
-						{{ Form::text('organizer', Auth::user()->displayname,
-							['class' => 'form-control',
-							 'placeholder' => 'Organizer',
-							 'disabled' => 'disabled',
-							 'id' => 'organizer-field']) }}
-					</div>
-					<!-- /.form-group -->
+		<div class="create-event-form-container">
+			{{ Form::open(['route' => 'event.store', 'role' => 'form', 'id' => 'create-event-form']) }}
+				<div class="form-group">
+					{{ Form::label('event-type', 'Type of Event') }}
+					{{ Form::text('event-type', null, ['class' => 'form-control', 'placeholder' => 'Baseball, Hiking, Running, etc']) }}
+				</div>
+				<!-- /.form-group -->
 
-					<div class="form-group">
-						{{ Form::label('start_time', 'Start Time') }}
-						{{ Form::text('start_time', null,
-							['class' => 'form-control',
-							 'placeholder' => 'Start Time',
-							 'id' => 'start_time-field']) }}
-					</div>
-					<!-- /.form-group -->
+				<div class="form-group">
+					{{ Form::label('event-name', 'Name the event') }}
+					{{ Form::text('event-name', null, ['class' => 'form-control', 'placeholder' => 'Name the event as it will be displayed']) }}
+				</div>
+				<!-- /.form-group -->
 
-					<div class="form-group">
-						{{ Form::label('end_time', 'End Time') }}
-						{{ Form::text('end_time', null,
-							['class' => 'form-control',
-							 'placeholder' => 'End Time',
-							 'id' => 'end_time-field']) }}
-					</div>
-					<!-- /.form-group -->
-
-					<div class="checkbox">
-						<label>
-							<input name="team_event" type="checkbox" id="team-event-checkbox"> Team Event
+				<div class="row">
+					<div class="checkbox col-lg-6 col-md-6">
+						<label for="event-teams-only">
+							<input type="checkbox" name="event-teams-only" id="team-event-checkbox"> Team event
 						</label>
 					</div>
-					<!-- /.team-event-checkbox -->
-
-					<div class="form-group hidden" id="team-dropdown">
-						{{ Form::label('team', 'My Team') }}
-						<select name="team" class="form-control">
-							@foreach($teams as $team)
-							<option value="{{ $team->id }}">{{ $team->name }}</option>
-							@endforeach
-						</select>
+					<!-- /.checkbox -->
+					<div class="form-group col-lg-6 col-md-6">
+						{{ Form::label('event-max-participants', 'Maximum # of people') }}
+						{{ Form::number('event-max-participants', null,
+							['class' => 'form-control',
+							 'placeholder' => 'Maximum participants',
+							 'id' => 'max-participants-number-field']) }}
 					</div>
 					<!-- /.form-group -->
-
-					<div class="form-group">
-						{{ Form::label('max_participants', 'Maximum Participants') }}
-						<input type="number" name="max_participants" class="form-control" id="max_participants-field" placeholder="Maximum Participants" min="1">
-					</div>
-					<!-- /.form-group -->
-
-					<div class="form-group">
-						{{ Form::label('venue', 'Venue') }}
-						<select name="venue" class="form-control">
-							<option value="0">To Be Determined</option>
-							@foreach($venues as $venue)
-							<option value="{{ $venue->id }}">{{ $venue->name }}</option>
-							@endforeach
-						</select>
-					</div>
-					<!-- /.form-group -->
-
 				</div>
-				<!-- /.new-event-form-container -->
-			</div>
-			<!-- /.modal-body -->
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-				<button type="submit" class="btn btn-primary">Publish Event</button>
-				{{ Form::close() }}
-				<!-- /.new-event-form -->
-			</div>
-			<!-- /.modal-footer -->
+				<!-- /.row -->
+
+				<div class="row">
+					<div class="form-group col-lg-6">
+						{{ Form::label('event-start-time', 'When does it begin?') }}
+						{{ Form::text('event-start-time', null, ['class' => 'form-control date-time-picker', 'placeholder' => 'Time the event starts']) }}
+					</div>
+					<!-- /.form-group -->
+
+					<div class="form-group col-lg-6">
+						{{ Form::label('event-end-time', 'When does it end?') }}
+						{{ Form::text('event-end-time', null, ['class' => 'form-control date-time-picker', 'placeholder' => 'Time the event ends']) }}
+					</div>
+					<!-- /.form-group -->
+				</div>
+				<!-- /.row -->
+
+				<div class="form-group">
+					<p>
+						<label>Where is the event taking place?</label>
+						<button type="button" data-toggle="modal" data-target="#venue-modal" class="btn btn-warning btn-block">
+							Choose a venue
+						</button>
+					</p>
+					<input type="text" class="form-control" readonly="true" id="venue-text-field" placeholder="Venue name">
+					<input type="hidden" name="event-venue" id="event-venue">
+				</div>
+				<!-- /.form-group -->
+
+				<div class="form-group">
+					{{ Form::label('event-organizer', 'Event is organized by') }}
+					{{ Form::text('event-organizer', Auth::user()->displayname, ['class' => 'form-control', 'disabled' => true]) }}
+				</div>
+				<!-- /.form-group -->
+
+				{{ Form::submit('Create event', ['class' => 'btn btn-primary btn-lg']) }}
+			{{ Form::close() }}
 		</div>
-		<!-- /.modal-content -->
+		<!-- /.create-event-form-container -->
+
 	</div>
-	<!-- /.modal-dialog -->
+	<!-- /.column -->
+
 </div>
-<!-- /.modal -->
+<!-- /.row -->
+
+@include('events._partials.venue_modal')
 
 @stop
 
+
 @section('scripts')
+
 <script>
+
+$('.select-venue-button').click(function() {
+	var venue = {
+		id: $(this).closest('div.thumbnail').data('venue-id'),
+		name: $(this).closest('div.thumbnail').data('venue-name'),
+		description: $(this).closest('div.thumbnail').data('venue-description'),
+	};
+	$('#venue-text-field').val(venue.name);
+	$('#event-venue').val(venue.id);
+	$('#venue-modal').modal('hide');
+});
+
 $(document).ready(function() {
-	$('#start_time-field').datetimepicker({ format: 'Y-m-d H:i' });
-	$('#end_time-field').datetimepicker({ format: 'Y-m-d H:i' });
-});
-
-$('#new-event-modal').on('show.bs.modal', function(e) {
-	var text = $('#new-event-modal h4.modal-title').text();
-	var activity = $(e.relatedTarget).data('activity');
-	var modalTitle = text.replace('[ACTIVITY]', activity);
-
-	// set the modal title
-	$('#new-event-modal h4.modal-title').text(modalTitle);
-	$('#activity-field').val(activity);
-});
-
-$('#team-event-checkbox').change(function() {
-	var team_select = $('#team-dropdown');
-	if($(this).is(':checked'))
-	{
-		team_select.removeClass('hidden');
-	}
-	else if( ! $(this).is(':checked'))
-	{
-		team_select.addClass('hidden');
-	}
+	$('.date-time-picker').datetimepicker();
 });
 </script>
+
 @stop

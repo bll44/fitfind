@@ -2,31 +2,9 @@
 
 Route::get('brady-test', function()
 {
-	$user = User::find(31);
+	$users = User::all();
 
-	$user_teams = $user->teams;
-
-	$team_events = array();
-	foreach($user_teams as $team)
-	{
-		$team->{'events'} = $team->events;
-		$team->team_name = $team->name;
-		$team_events[] = $team;
-	}
-
-	return $team_events;
-
-	foreach($team_events as $te)
-	{
-		echo $te->name . '<br>';
-		foreach($te->events as $event)
-		{
-			echo $event->displayname . '<br>';
-		}
-	}
-
-	return;
-	// return $team_events;
+	return htmlRows($users, 18);
 
 });
 

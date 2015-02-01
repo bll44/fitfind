@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="alert alert-success">Event {{ $event->displayname }} created.</div>
+<div class="alert alert-success">Event {{ $event->displayname }} @ {{ $event->venue->name }} created.</div>
 
 @stop
 

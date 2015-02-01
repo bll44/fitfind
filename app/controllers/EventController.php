@@ -26,6 +26,7 @@ class EventController extends \BaseController {
 	 *
 	 * @return Response
 	 */
+	/*
 	public function create()
 	{
 		// List of Activities, will be pulled from the database in the future
@@ -36,6 +37,21 @@ class EventController extends \BaseController {
 		return View::make('events/create', ['activePage' => 'events', 'activities' => $activities,
 											'teams' => $teams, 'venues' => $venues]);
 	}
+	*/
+
+	public function create()
+	{
+		$teams = Team::where('team_leader_id', Auth::user()->id)->get();
+		$venues = Venue::all();
+		$htmlRows = htmlRows($venues, 3);
+
+		return View::make('events.create',
+			['activePage' => 'events',
+			 'teams', $teams,
+			 'venues' => $venues,
+			 'htmlRows' => $htmlRows]
+		);
+	}
 
 
 	/**
@@ -43,9 +59,10 @@ class EventController extends \BaseController {
 	 *
 	 * @return Response
 	 */
+	/*
 	public function store()
 	{
-		// return Input::all();
+		return Input::all();
 		$validator = Validator::make(
 			Input::all(),
 			[
@@ -90,6 +107,32 @@ class EventController extends \BaseController {
 				$event->users()->attach(Auth::user()->id);
 
 			return View::make('events/created', ['event' => $event]);
+		}
+	}
+	*/
+
+	public function store()
+	{
+		$event = new Event;
+		$event->activity = Input::get('event-type');
+		$event->displayname = Input::get('event-name');
+
+		if(Input::has('event-teams-only')) $event->team_event = 1;
+
+		$event->start_time = Input::get('event-start-time');
+		$event->end_time = Input::get('event-end-time');
+		$event->max_participants = Input::get('event-max-participants');
+		$event->venue_id = Input::get('event-venue');
+		$event->organizer_id = Auth::user()->id;
+
+		if($event->save())
+		{
+			$event->users()->attach(Auth::user()->id);
+			return View::make('events.created', ['event' => $event]);
+		}
+		else
+		{
+			return Redirect::route('events.create')->withInput();
 		}
 	}
 

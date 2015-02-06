@@ -24,7 +24,7 @@ class UserTableSeeder extends Seeder {
 				'unit' => $faker->secondaryAddress,
 				'city' => $faker->city,
 				'state' => $faker->state,
-				'zip' => $faker->postcode,
+				'zip' => rand(10000, 99999),
 				'dob' => $faker->date(),
 				'gender' => $genders[array_rand($genders)],
 				'phone' => 1234567890,

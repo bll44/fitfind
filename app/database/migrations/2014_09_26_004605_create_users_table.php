@@ -24,7 +24,7 @@ class CreateUsersTable extends Migration {
 			$table->string('city')->nullable();
 			$table->string('state')->nullable();
 			$table->integer('zip')->nullable();
-			$table->date('dob');
+			$table->date('dob')->nullable();
 			$table->string('gender')->nullable();
 			$table->bigInteger('phone')->nullable();
 			$table->tinyInteger('notifyEmail')->default(0);

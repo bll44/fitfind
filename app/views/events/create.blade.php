@@ -47,6 +47,21 @@
 				</div>
 				<!-- /.row -->
 
+				<div class="row hidden" id="team-selection-container">
+					<div class="form-group col-lg-12 col-md-12">
+						<p>
+							<label>Which team is playing in this event?</label>
+							<button type="button" data-toggle="modal" data-target="#team-modal" class="btn btn-warning btn-block">
+								Choose a team
+							</button>
+						</p>
+						<input type="text" class="form-control" readonly="true" id="team-text-field" placeholder="Team name">
+						<input type="hidden" name="event-team" id="event-team">
+					</div>
+					<!-- /.form-group -->
+				</div>
+				<!-- /.row -->
+
 				<div class="row">
 					<div class="form-group col-lg-6">
 						{{ Form::label('event-start-time', 'When does it begin?') }}
@@ -92,6 +107,7 @@
 <!-- /.row -->
 
 @include('events._partials.venue_modal')
+@include('events._partials.team_modal')
 
 @stop
 
@@ -99,6 +115,28 @@
 @section('scripts')
 
 <script>
+
+$('#team-event-checkbox').click(function() {
+	if($(this).is(':checked'))
+	{
+		$('#team-selection-container').removeClass('hidden');
+	}
+	else if( ! $(this).is(':checked'))
+	{
+		$('#team-selection-container').addClass('hidden');
+	}
+});
+
+$('.select-team-button').click(function() {
+	var team = {
+		id: $(this).closest('div.thumbnail').data('team-id'),
+		name: $(this).closest('div.thumbnail').data('team-name'),
+		description: $(this).closest('div.thumbnail').data('team-description'),
+	};
+	$('#team-text-field').val(team.name);
+	$('#event-team').val(team.id);
+	$('#team-modal').modal('hide');
+});
 
 $('.select-venue-button').click(function() {
 	var venue = {

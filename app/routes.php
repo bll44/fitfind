@@ -21,6 +21,7 @@ Route::group(['before' => 'auth'], function()
 	// Event routes
 	Route::get('user/{user_id}/events', ['as' => 'user.events.show', 'uses' => 'EventController@showUserEvents']);
 	Route::get('event/{event_id}/join', ['as' => 'event.join', 'uses' => 'EventController@joinEvent']);
+	Route::get('team_event/{event_id}/join', ['as' => 'team.event.join', 'uses' => 'EventController@joinTeamEvent']);
 	Route::resource('event', 'EventController');
 
 	// Account settings routes

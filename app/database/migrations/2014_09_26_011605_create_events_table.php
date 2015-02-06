@@ -20,6 +20,7 @@ class CreateEventsTable extends Migration {
 			$table->integer('organizer_id');
 			$table->integer('max_participants')->nullable();
 			$table->boolean('team_event')->default(0);
+			$table->integer('primary_team_id')->default(0);
 			$table->dateTime('start_time');
 			$table->dateTime('end_time');
 			$table->integer('venue_id');

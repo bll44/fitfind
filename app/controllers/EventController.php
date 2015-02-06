@@ -15,109 +15,50 @@ class EventController extends \BaseController {
 	 */
 	public function index()
 	{
-		$events = Event::orderBy('start_time', 'ASC')->get();
+		$events = Event::where('organizer_id', '<>', Auth::user()->id)->orderBy('start_time', 'ASC')->get();
 
-		return View::make('events.index', ['events' => $events]);
+		return View::make('events.index', ['events' => $events, 'activePage' => 'events']);
 	}
 
 
 	/**
-	 * Show the form for creating a new resource.
+	 * Show the form for creating a new event resource.
 	 *
 	 * @return Response
 	 */
-	/*
-	public function create()
-	{
-		// List of Activities, will be pulled from the database in the future
-		$activities = Config::get('activities');
-
-		$teams = Team::where('team_leader_id', Auth::user()->id)->get();
-		$venues = Venue::all();
-		return View::make('events/create', ['activePage' => 'events', 'activities' => $activities,
-											'teams' => $teams, 'venues' => $venues]);
-	}
-	*/
-
 	public function create()
 	{
 		$teams = Team::where('team_leader_id', Auth::user()->id)->get();
 		$venues = Venue::all();
-		$htmlRows = htmlRows($venues, 3);
+		$venueRows = htmlRows($venues, 3);
+		$teamRows = htmlRows($teams, 3);
 
 		return View::make('events.create',
 			['activePage' => 'events',
 			 'teams', $teams,
 			 'venues' => $venues,
-			 'htmlRows' => $htmlRows]
+			 'venueRows' => $venueRows,
+			 'teamRows' => $teamRows]
 		);
 	}
 
 
 	/**
-	 * Store a newly created resource in storage.
+	 * Store a newly created event in storage.
 	 *
 	 * @return Response
 	 */
-	/*
-	public function store()
-	{
-		return Input::all();
-		$validator = Validator::make(
-			Input::all(),
-			[
-				'organizer' => 'required|integer',
-				'venue' => 'required|integer',
-				'start_time' => 'required|date_format:Y-m-d H:i',
-				'end_time' => 'required|date_format:Y-m-d H:i'
-			]
-		);
-
-		if($validator->fails())
-		{
-			return Redirect::back();
-		}
-
-		$event = new Event;
-		$event->activity = Input::get('activity');
-		$event->displayname = $event->activity;
-		$event->max_participants = Input::get('max_participants');
-		$event->start_time = Input::get('start_time');
-		$event->end_time = Input::get('end_time');
-		$event->venue_id = Input::get('venue');
-
-		if(Input::has('team_event'))
-		{
-			$team_id = Input::get('team');
-			$event->team_event = 1;
-			$event->organizer_id = $team_id;
-			$team = Team::find($team_id);
-		}
-		else
-		{
-			$event->team_event = 0;
-			$event->organizer_id = Auth::user()->id;
-		}
-
-		if($event->save())
-		{
-			if($event->team_event)
-				$event->teams()->attach($team->id);
-			else
-				$event->users()->attach(Auth::user()->id);
-
-			return View::make('events/created', ['event' => $event]);
-		}
-	}
-	*/
-
 	public function store()
 	{
 		$event = new Event;
 		$event->activity = Input::get('event-type');
 		$event->displayname = Input::get('event-name');
 
-		if(Input::has('event-teams-only')) $event->team_event = 1;
+		if(Input::has('event-teams-only'))
+		{
+			$event->team_event = 1;
+			$team = Team::find(Input::get('event-team'));
+		}
 
 		$event->start_time = Input::get('event-start-time');
 		$event->end_time = Input::get('event-end-time');
@@ -127,7 +68,16 @@ class EventController extends \BaseController {
 
 		if($event->save())
 		{
-			$event->users()->attach(Auth::user()->id);
+			if($event->team_event && $team)
+			{
+				$event->primary_team_id = $team->id;
+				$event->teams()->attach($team->id);
+			}
+			else
+			{
+				$event->users()->attach(Auth::user()->id);
+			}
+			
 			return View::make('events.created', ['event' => $event]);
 		}
 		else
@@ -147,36 +97,56 @@ class EventController extends \BaseController {
 	{
 		$event = Event::find($id);
 
-		if($event->team_event && null !== Auth::user()->teams)
+		if($event->team_event && null === Auth::user()->teams)
 		{
 			return Redirect::back()->with('no_teams_error', 'You must be on a team to see this event.');
 		}
 
 		$teams = array();
-		foreach(TeamLeader::find(Auth::user()->id)->teams as $team)
-		{
-			$teams[] = $team;
-		}
-		foreach(Auth::user()->teams as $team)
+		foreach(Team::where('team_leader_id', Auth::user()->id)->get() as $team)
 		{
 			$teams[] = $team;
 		}
 
-		return View::make('events.show', ['event' => $event, 'teams' => $teams]);
+		$teamRows = htmlRows($teams);
+
+		return View::make('events.show', 
+			['event' => $event, 
+			 'teams' => $teams, 
+			 'teamRows' => $teamRows,
+			 'activePage' => 'events']);
 	}
 
 	public function joinEvent($id)
 	{
-		if(Input::has('team_id'))
+		$event = Event::find($id);
+
+		if(Input::has('team-id'))
 		{
-			$team = Team::find(Input::get('team_id'));
+			$team = Team::find(Input::get('team-id'));
 			$team->events()->attach($id);
+		}
+		elseif(Request::isMethod('get') && $event->team_event)
+		{
+			return Redirect::to("event/{$event->id}?choose_team=1");
 		}
 		else
 		{
 			Auth::user()->events()->attach($id);
 		}
-		return Redirect::route('user.events.show', [Auth::user()->id]);
+
+		if($event->team_event)
+			return Redirect::route('teams.show', [Input::get('team-id')]);
+		else
+			return Redirect::route('user.events.show', [Auth::user()->id]);
+	}
+
+	public function joinTeamEvent($id)
+	{
+		$event = Event::find($id);
+		$teams = Auth::user()->teams;
+
+		return View::make('events.join_team_event', ['event' => $event, 'teams' => $teams]);
 	}
 
 	public function showUserEvents($id)

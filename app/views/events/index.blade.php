@@ -27,6 +27,8 @@
 @endif
 
 @foreach($events as $event)
+<?php if($event->team_event) $team = Team::find($event->primary_team_id) ?>
+<?php $organizer = User::find($event->organizer_id) ?>
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 
@@ -36,8 +38,10 @@
 			</div>
 			<!-- /.panel-heading -->
 			<div class="panel-body">
+				<p>Event Organizer: {{ $organizer->displayname }}</p>
 				@if($event->team_event)
 				<p>Teams only: Yes</p>
+				<p>Primary team: {{ link_to_route('teams.show', $team->name, [$team->id]) }}</p>
 				@else
 				<p>Teams only: No</p>
 				@endif

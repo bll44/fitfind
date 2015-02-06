@@ -81,7 +81,7 @@ class AuthController extends \BaseController {
 			'displayname' => 'required',
 			'username' => 'required|unique:users,username',
 			'email' => 'required|email|unique:users,email']
-			);
+		);
 
 		if($validator->passes())
 		{

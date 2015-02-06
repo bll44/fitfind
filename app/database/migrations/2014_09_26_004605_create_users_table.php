@@ -23,7 +23,7 @@ class CreateUsersTable extends Migration {
 			$table->string('unit')->nullable()->default(null);
 			$table->string('city')->nullable();
 			$table->string('state')->nullable();
-			$table->integer('zip');
+			$table->integer('zip')->nullable();
 			$table->date('dob');
 			$table->string('gender')->nullable();
 			$table->bigInteger('phone')->nullable();

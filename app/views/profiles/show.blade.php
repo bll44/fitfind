@@ -15,7 +15,7 @@
 			<div class="panel-heading">
 				<h3 class="panel-title">
 					Profile&nbsp;
-					<small><a href="#" class="pull-right" id="edit-profile-link"><i class="fa fa-edit"></i> Edit</a></small>
+					{{-- <small><a href="#" class="pull-right" id="edit-profile-link"><i class="fa fa-edit"></i> Edit</a></small> --}}
 				</h3>
 			</div>
 			<!-- /.panel-heading -->
@@ -48,6 +48,36 @@
 						<ul class="list-group">
 						@foreach($user->teams as $team)
 						<li class="list-group-item">{{ link_to_route('teams.show', $team->name, [$team->id]) }}</li>
+						@endforeach
+						</ul>
+						<!-- /.list-group -->
+					</div>
+				</div>
+				<!-- /.row -->
+			</div>
+			<!-- /.panel-body -->
+		</div>
+		<!-- /.panel -->
+	</div>
+	<!-- /.column -->
+</div>
+<!-- /.row -->
+
+<div class="row">
+	<div class="col-lg-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					Pending Requests
+				</h3>
+			</div>
+			<!-- /.panel-heading -->
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						<ul class="list-group">
+						@foreach($pending_approvals as $pa)
+						<li class="list-group-item">{{ link_to_route('teams.show', $pa->team->name, [$pa->team->id]) }}</li>
 						@endforeach
 						</ul>
 						<!-- /.list-group -->

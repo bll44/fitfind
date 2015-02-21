@@ -16,4 +16,14 @@ class TeamApproval extends Eloquent {
 		$this->delete();
 	}
 
+	public function user()
+	{
+		return $this->belongsTo('User');
+	}
+
+	public function team()
+	{
+		return $this->belongsTo('Team');
+	}
+
 }

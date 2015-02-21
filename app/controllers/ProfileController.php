@@ -44,8 +44,9 @@ class ProfileController extends \BaseController {
 	public function show($username)
 	{
 		$user = User::with('Profile')->whereUsername($username)->first();
+		$pending_approvals = TeamApproval::where('user_id', $user->id)->get();
 
-		return View::make('profiles.show', ['user' => $user]);
+		return View::make('profiles.show', ['user' => $user, 'pending_approvals' => $pending_approvals]);
 	}
 
 

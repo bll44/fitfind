@@ -1,11 +1,8 @@
 <?php
 
-Route::get('brady-test', function()
+Route::get('testing', function()
 {
-	$users = User::all();
-
-	return htmlRows($users, 18);
-
+	
 });
 
 Route::group(['before' => 'auth'], function()

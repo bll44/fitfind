@@ -8,6 +8,8 @@
 
 <h2>All Teams</h2>
 @foreach($teams as $team)
+
+@if( ! in_array($team->id, $my_teams))
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<h3 class="panel-title">{{ link_to_route('teams.show', $team->name, [$team->id]) }}<span class="pull-right"><i class="fa fa-asterisk"></i> {{ User::find($team->team_leader_id)->displayname }}</span></h3>
@@ -22,6 +24,8 @@
 	</div>
 	<!-- /.panel-footer -->
 </div>
+@endif
+
 @endforeach
 
 @stop

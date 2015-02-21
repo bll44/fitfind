@@ -91,8 +91,12 @@ class TeamController extends \BaseController {
 	public function browse()
 	{
 		$teams = Team::orderBy('created_at', 'DESC')->where('team_leader_id', '<>', Auth::user()->id)->get();
-
-		return View::make('teams.browse', ['teams' => $teams]);
+		$my_teams = array();
+		foreach(Auth::user()->teams as $team)
+		{
+			$my_teams[] = $team->id;
+		}
+		return View::make('teams.browse', ['teams' => $teams, 'my_teams' => $my_teams]);
 	}
 
 	/**

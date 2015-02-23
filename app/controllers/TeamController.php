@@ -74,6 +74,18 @@ class TeamController extends \BaseController {
 		return json_encode(['status_code' => 200]);
 	}
 
+	public function cancelJoin()
+	{
+		$team_id = Input::get('team');
+		$team = Team::find($team_id);
+		$candidate = Auth::user();
+
+		$teamApproval = TeamApproval::where('team_id', $team->id)->where('user_id', $candidate->id)->first();
+		$teamApproval->delete();
+
+		return json_encode(['status_code' => 200]);
+	}
+
 
 	/**
 	 * Display the specified resource.
@@ -96,7 +108,13 @@ class TeamController extends \BaseController {
 		{
 			$my_teams[] = $team->id;
 		}
-		return View::make('teams.browse', ['teams' => $teams, 'my_teams' => $my_teams]);
+		$team_approvals = TeamApproval::where('user_id', Auth::user()->id)->get();
+		$requested = array();
+		foreach($team_approvals as $ta)
+		{
+			$requested[] = $ta->team_id;
+		}
+		return View::make('teams.browse', ['teams' => $teams, 'my_teams' => $my_teams, 'requested' => $requested]);
 	}
 
 	/**

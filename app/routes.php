@@ -5,6 +5,15 @@ Route::get('testing', function()
 	
 });
 
+Route::get('sync_team_and_leaders', function()
+{
+	foreach(Team::all() as $team)
+	{
+		$team->members()->attach($team->team_leader_id);
+	}
+	return 'done.';
+});
+
 Route::group(['before' => 'auth'], function()
 {
 	// logoff route
@@ -46,6 +55,7 @@ Route::group(['before' => 'auth'], function()
 
 	// Team routes
 	Route::post('team/join', ['as' => 'team.join', 'uses' => 'TeamController@join']);
+	Route::post('team/cancel_join', ['as' => 'team.cancel_join', 'uses' => 'TeamController@cancelJoin']);
 	Route::get('teams/browse', ['as' => 'teams.browse', 'uses' => 'TeamController@browse']);
 	Route::get('teams/get_request_approvals', ['as' => 'get.request_approvals', 'uses' => 'TeamController@getApprovalRequests']);
 	Route::get('teams/approvals/{approval_id}/{status}', ['as' => 'teams.approval.update', 'uses' => 'TeamController@updateApprovalRequest']);

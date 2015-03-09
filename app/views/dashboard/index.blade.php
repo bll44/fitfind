@@ -48,40 +48,13 @@
 </div>
 <!-- /.row -->
 
-<div class="row">
-	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h3 class="panel-title">Friends</h3>
-			</div>
-			<!-- /.panel-heading -->
-			<div class="panel-body">
-				<h2>Friends</h2>
-				{{ link_to(Auth::user()->username . "/friends", 'Manage Friends') }}
-			</div>
-			<!-- /.panel-body -->
-		</div>
-		<!-- /.panel -->
-	</div>
-	<!-- /column -->
-</div>
-<!-- /.row -->
-
 @stop
 
 @section('scripts')
 
 <script>
 
-$(document).ready(function() {
-	var obj = {};
-
-	obj.patrick = 'test';
-
-	console.log(obj);
-
-	console.log(obj.patrick);
-});
+$('.help-link').popover();
 
 </script>
 

@@ -2,6 +2,11 @@
 
 	<title>FitFind</title>
 	<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+	
+	@if(isset($help_title) && isset($help_content))
+	<meta name="help-content-title" content="{{ $help_title }}">
+	<meta name="help-content" content="{{ $help_content }}">
+	@endif
 
 
 	<!-- Bootstrap theme packages (Bootswatch) -->

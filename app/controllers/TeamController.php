@@ -14,7 +14,19 @@ class TeamController extends \BaseController {
 		$teams = $user->teams;
 		$approvals = $user->getApprovals();
 
-		return View::make('teams.my_teams',	compact('teams', 'approvals'));
+		$help_title = 'My Teams';
+		$help_content = 'Whether you’re a team captain (denoted by the asterisk next to your team), or the ultimate teamplayer, 
+						you’ll see your teams that you are a part of either way here. You can click “Team Overview” to 
+						see other team members, events past and future that your team is a part of, and your team’s description.';
+
+		return View::make('teams.my_teams',	
+			[
+				'teams' => $teams,
+			 	'approvals' => $approvals,
+			 	'help_title' => $help_title,
+			 	'help_content' => $help_content,
+			]
+		);
 	}
 
 
@@ -25,7 +37,11 @@ class TeamController extends \BaseController {
 	 */
 	public function create()
 	{
-		return View::make('teams.create');
+		$help_title = 'Creating a team';
+		$help_content = 'We find that fitness can be more fun with a team! Now that you’ve decided to create one, you can just 
+						add your team’s name (be creative!) and a short (not more than 1,000 characters) fun description, then 
+						click “Create Team”. You’ll be redirected to the “My Teams” page where you will see your new team!';
+		return View::make('teams.create', ['help_title' => $help_title, 'help_content' => $help_content]);
 	}
 
 
@@ -45,7 +61,24 @@ class TeamController extends \BaseController {
 		$team->description = $description;
 		$team->team_leader_id = $user->id;
 
-		$team->save();
+		$validation_rules = [
+			'team_name' => 'required',
+			'team_description' => 'required',
+		];
+
+		$validator = Validator::make(
+			Input::all(),
+			$validation_rules
+		);
+
+		if($validator->passes())
+		{
+			$team->save();
+		}
+		elseif($validator->fails())
+		{
+			return Redirect::route('teams.create')->withInput()->withErrors($validator);
+		}
 
 		$user->teams()->attach($team->id);
 
@@ -96,7 +129,6 @@ class TeamController extends \BaseController {
 	public function show($id)
 	{
 		$team = Team::with('Members', 'Events')->whereId($id)->first();
-
 		return View::make('teams.show', ['team' => $team]);
 	}
 
@@ -114,7 +146,14 @@ class TeamController extends \BaseController {
 		{
 			$requested[] = $ta->team_id;
 		}
-		return View::make('teams.browse', ['teams' => $teams, 'my_teams' => $my_teams, 'requested' => $requested]);
+
+		$help_title = 'Want to join a team?';
+		$help_content = 'You’ve come to the right place! Scroll on through the list of teams, and hit 
+						“Request to Join This Team” to send a request to the Team Captain. Reconsidering? 
+						Just click on the "Request Sent” button to take back this request!';
+
+		return View::make('teams.browse', ['teams' => $teams, 'my_teams' => $my_teams, 'requested' => $requested,
+											'help_title' => $help_title, 'help_content' => $help_content]);
 	}
 
 	/**

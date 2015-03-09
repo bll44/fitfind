@@ -20,12 +20,14 @@ textarea {
 			<div class="form-group">
 				{{ Form::label('team_name', 'Team Name') }}
 			    {{ Form::text('team_name', null, ['class' => 'form-control', 'placeholder' => 'Team Name']) }}
+			    <p class="text-danger">{{ $errors->first('team_name') }}</p>
 			</div>
 			<!-- /.form-group -->
 
 			<div class="form-group">
 				{{ Form::label('team_description', 'Team Description') }}
 				{{ Form::textarea('team_description', null, ['class' => 'form-control', 'placeholder' => 'Team Description', 'resize' => 'none']) }}
+				<p class="text-danger">{{ $errors->first('team_name') }}</p>
 			</div>
 			<!-- /.form-group -->
 		  	{{ Form::submit('Create Team', ['class' => 'btn btn-primary']) }}

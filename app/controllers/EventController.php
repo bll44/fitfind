@@ -16,8 +16,11 @@ class EventController extends \BaseController {
 	public function index()
 	{
 		$events = Event::where('organizer_id', '<>', Auth::user()->id)->orderBy('start_time', 'ASC')->get();
+		$help_title = 'See an event you’d like to join?';
+		$help_content = 'Click “Join This Event”, and you’ll be redirected to the Event page.';
 
-		return View::make('events.index', ['events' => $events, 'activePage' => 'events']);
+		return View::make('events.index', ['events' => $events, 'activePage' => 'events',
+										   'help_title' => $help_title, 'help_content' => $help_content]);
 	}
 
 
@@ -33,12 +36,20 @@ class EventController extends \BaseController {
 		$venueRows = htmlRows($venues, 3);
 		$teamRows = htmlRows($teams, 3);
 
+		$help_title = 'Creating a new event';
+		$help_content = 'Be sure to fill in all the form fields, and don’t forget to check the “Team Event” option if 
+						this is an event you only want your team to participate in or see! Also, don’t forget to select your venue 
+						by clicking “Choose a Venue” button, and selecting one from the window that will pop up. Click “Create Event”
+						 once you are satisfied, and you’ll be see a message stating that your event was successfully created.';
+
 		return View::make('events.create',
 			['activePage' => 'events',
 			 'teams', $teams,
 			 'venues' => $venues,
 			 'venueRows' => $venueRows,
-			 'teamRows' => $teamRows]
+			 'teamRows' => $teamRows,
+			 'help_title' => $help_title,
+			 'help_content' => $help_content]
 		);
 	}
 
@@ -53,11 +64,34 @@ class EventController extends \BaseController {
 		$event = new Event;
 		$event->activity = Input::get('event-type');
 		$event->displayname = Input::get('event-name');
+		$validation_rules = [
+			'event-type' => 'required',
+			'event-name' => 'required',
+			'event-max-participants' => 'required',
+			'event-start-time' => 'required',
+			'event-end-time' => 'required',
+			'event-venue' => 'required',
+		];
 
 		if(Input::has('event-teams-only'))
 		{
+			$validation_rules['event-team'] = 'required';
 			$event->team_event = 1;
 			$team = Team::find(Input::get('event-team'));
+		}
+
+		$validator = Validator::make(
+			Input::all(),
+			$validation_rules
+		);
+
+		if($validator->passes() && Input::has('event-teams-only'))
+		{
+			$event->primary_team_id = $team->id;
+		}
+		elseif($validator->fails())
+		{
+			return Redirect::route('event.create')->withInput()->withErrors($validator);
 		}
 
 		$event->start_time = Input::get('event-start-time');
@@ -70,7 +104,6 @@ class EventController extends \BaseController {
 		{
 			if($event->team_event && $team)
 			{
-				$event->primary_team_id = $team->id;
 				$event->teams()->attach($team->id);
 			}
 			else
@@ -110,11 +143,16 @@ class EventController extends \BaseController {
 
 		$teamRows = htmlRows($teams);
 
+		$help_title = 'Event Page';
+		$help_content = 'If this is a team event, you’ll be prompted to select a team that you’re the captain of prior to joining.';
+
 		return View::make('events.show', 
 			['event' => $event, 
 			 'teams' => $teams, 
 			 'teamRows' => $teamRows,
-			 'activePage' => 'events']);
+			 'activePage' => 'events',
+			 'help_title' => $help_title,
+			 'help_content' => $help_content]);
 	}
 
 	public function joinEvent($id)

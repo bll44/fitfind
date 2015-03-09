@@ -9,7 +9,13 @@ class DashboardController extends \BaseController {
 	 */
 	public function index()
 	{
-		return View::make('dashboard.index');
+		$help_title = 'Welcome to the FitFind Dashboard';
+		$help_content = 'From here, you can view your Events and Teams that you are a part of by clicking on 
+						<b>View my Events</b> and <b>View My Teams</b> respectively.<br><br>If you’re not part of any events or teams, 
+						we can help! Just navigate to the omnipresent toolbar at the top of the screen, and click on the 
+						<b>Events</b> or <b>Teams</b> dropdowns to browse or create events and teams to join!';
+
+		return View::make('dashboard.index', ['help_title' => $help_title, 'help_content' => $help_content]);
 	}
 
 

@@ -20,12 +20,14 @@
 				<div class="form-group">
 					{{ Form::label('event-type', 'Type of Event') }}
 					{{ Form::text('event-type', null, ['class' => 'form-control', 'placeholder' => 'Baseball, Hiking, Running, etc']) }}
+					<p class="text-danger">{{ $errors->first('event-type') }}</p>
 				</div>
 				<!-- /.form-group -->
 
 				<div class="form-group">
 					{{ Form::label('event-name', 'Name the event') }}
 					{{ Form::text('event-name', null, ['class' => 'form-control', 'placeholder' => 'Name the event as it will be displayed']) }}
+					<p class="text-danger">{{ $errors->first('event-name') }}</p>
 				</div>
 				<!-- /.form-group -->
 
@@ -41,7 +43,9 @@
 						{{ Form::number('event-max-participants', null,
 							['class' => 'form-control',
 							 'placeholder' => 'Maximum participants',
-							 'id' => 'max-participants-number-field']) }}
+							 'id' => 'max-participants-number-field',
+							 'min' => '1']) }}
+						 <p class="text-danger">{{ $errors->first('event-max-participants') }}</p>
 					</div>
 					<!-- /.form-group -->
 				</div>
@@ -57,6 +61,7 @@
 						</p>
 						<input type="text" class="form-control" readonly="true" id="team-text-field" placeholder="Team name">
 						<input type="hidden" name="event-team" id="event-team">
+						<p class="text-danger">{{ $errors->first('event-team') }}</p>
 					</div>
 					<!-- /.form-group -->
 				</div>
@@ -66,12 +71,14 @@
 					<div class="form-group col-lg-6">
 						{{ Form::label('event-start-time', 'When does it begin?') }}
 						{{ Form::text('event-start-time', null, ['class' => 'form-control date-time-picker', 'placeholder' => 'Time the event starts']) }}
+						<p class="text-danger">{{ $errors->first('event-start-time') }}</p>
 					</div>
 					<!-- /.form-group -->
 
 					<div class="form-group col-lg-6">
 						{{ Form::label('event-end-time', 'When does it end?') }}
 						{{ Form::text('event-end-time', null, ['class' => 'form-control date-time-picker', 'placeholder' => 'Time the event ends']) }}
+						<p class="text-danger">{{ $errors->first('event-end-time') }}</p>
 					</div>
 					<!-- /.form-group -->
 				</div>
@@ -86,12 +93,14 @@
 					</p>
 					<input type="text" class="form-control" readonly="true" id="venue-text-field" placeholder="Venue name">
 					<input type="hidden" name="event-venue" id="event-venue">
+					<p class="text-danger">{{ $errors->first('event-venue') }}</p>
 				</div>
 				<!-- /.form-group -->
 
 				<div class="form-group">
 					{{ Form::label('event-organizer', 'Event is organized by') }}
 					{{ Form::text('event-organizer', Auth::user()->displayname, ['class' => 'form-control', 'disabled' => true]) }}
+					<p class="text-danger">{{ $errors->first('event-organizer') }}</p>
 				</div>
 				<!-- /.form-group -->
 

@@ -22,6 +22,7 @@
 						Events <span class="caret"></span>
 					</a>
 					<ul class="dropdown-menu" role="menu">
+						<li>{{ link_to_route('user.events.show', 'My Events', [Auth::user()->id]) }}</li>
 						<li>{{ link_to_route('event.create', 'Create an Event') }}</li>
 						<li>{{ link_to_route('event.index', 'Browse All Events') }}</li>
 					</ul>
@@ -38,6 +39,7 @@
 				</li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
+				<li><a href="#" tabindex="0" id="need-help-link" data-toggle="popover">Need Help?</a></li>
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 						Hi, {{ Auth::user()->displayname }} <span class="caret"></span>
@@ -52,3 +54,4 @@
 		</div><!-- / navbar-collapse -->
 	</div><!-- / container -->
 </div><!-- / navbar -->
+{{ HTML::script('js/help-popover.js') }}

@@ -52,7 +52,12 @@ class AccountController extends \BaseController {
 	{
 		$user = User::find($id);
 
-		return View::make('accounts.index', ['user' => $user]);
+		$help_title = 'My Account';
+		$help_content = 'Your one stop shop for all account related changes. Update any information you’d like to provide 
+						FitFind, and click on the “Save Contact Information” or “Save Address Information” button to update 
+						your account information.';
+
+		return View::make('accounts.index', ['user' => $user, 'help_title' => $help_title, 'help_content' => $help_content]);
 	}
 
 	public function changePassword()

@@ -32,7 +32,7 @@
 				</div>
 				<!-- /.panel-body -->
 				<div class="panel-footer">
-				{{ link_to_route('teams.show', 'View Team Members', [$team->id]) }}
+				{{ link_to_route('teams.show', 'Team Overview', [$team->id]) }}
 				</div>
 				<!-- /.panel-footer -->
 			</div>

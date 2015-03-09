@@ -201,10 +201,15 @@ class EventController extends \BaseController {
 			$team_events[] = $team;
 		}
 
+		$help_title = 'My Events';
+		$help_content = 'This page shows any events you are currently signed up to attend or any event you have created yourself for others to join.';
+
 		return View::make('events.user_events',
 				['user' => $user,
 				 'team_events' => $team_events,
-				 'user_events' => $user_events]
+				 'user_events' => $user_events,
+				 'help_title' => $help_title,
+				 'help_content' => $help_content]
 		);
 	}
 

@@ -194,6 +194,9 @@
 @section('scripts')
 
 <script>
+var oldPasswordInputElement,
+	newPasswordInputElement,
+	newPasswordConfirmedInputElement;
 
 function hideAlerts(class_name)
 {
@@ -205,12 +208,49 @@ function hideAlerts(class_name)
 	});
 }
 
-$('#change-password-form').submit(function() {
+$(document).ready(function() {
+	oldPasswordInputElement = $('#old_password-field');
+	newPasswordInputElement = $('#new_password-field');
+	newPasswordConfirmedInputElement = $('#password_confirmation-field');
+
+	// np_FormGroup = newPasswordInputElement.closest('.form-group');
+	// npc_FormGroup = newPasswordConfirmedInputElement.closest('.form-group');
+
+	// newPasswordInputElement.bind('keyup', function(event) {
+	// 	if(np_FormGroup.hasClass('has-error') && npc_FormGroup.hasClass('has-error'))
+	// });
+
+	// newPasswordConfirmedInputElement.bind('keyup', function(event) {
+	// 	var npfg = $(this).closest('.form-group'),
+	// 		npcfg = $(newPasswordConfirmedInputElement).closest('.form-group');
+	// 	if( ( npfg.hasClass('has-error') && npcfg.hasClass('has-error') ) && (event.keyCode !== 13) )
+	// 	{
+	// 		npfg.removeClass('has-error');
+	// 		npcfg.removeClass('has-error');
+	// 	}
+	// });
+});
+
+$('#change-password-form').submit(function(event) {
+	event.preventDefault();
+
 	hideAlerts('pwd-alert');
 
-	var oldPassword = $('#old_password-field').val(),
-		newPassword = $('#new_password-field').val(),
-		newPasswordConfirmed = $('#password_confirmation-field').val();
+	var oldPassword = oldPasswordInputElement.val(),
+		newPassword = newPasswordInputElement.val(),
+		newPasswordConfirmed = newPasswordConfirmedInputElement.val();
+
+	if(newPassword.length <= 7 || newPasswordConfirmed <= 7)
+	{
+		newPasswordInputElement.closest('.form-group').addClass('has-error');
+		newPasswordConfirmedInputElement.closest('.form-group').addClass('has-error');
+		return false;
+	}
+	else
+	{
+		newPasswordInputElement.closest('.form-group').removeClass('has-error');
+		newPasswordConfirmedInputElement.closest('.form-group').removeClass('has-error');
+	}
 
 	$.ajax({
 		url: "{{ URL::route('account.change_password', [Auth::user()->id]) }}",
@@ -254,9 +294,6 @@ $('#contact-info-form').submit(function() {
 		data: { name: name, email: emailAddress, phone: phoneNumber },
 		dataType: 'json'
 	}).done(function(data) {
-		// console.log(data);
-		// console.log(data.status);
-		// console.log(data.message);
 		if(data.status === 'success')
 		{
 			$('#contact-update-success-msg').removeClass('hidden');

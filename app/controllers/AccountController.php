@@ -69,8 +69,8 @@ class AccountController extends \BaseController {
 		$validator = Validator::make(
 			Input::all(),
 			array(
-				'old_password' => 'required',
-				'new_password' => 'required|confirmed'
+				'old_password' => 'required|min:8',
+				'new_password' => 'required|confirmed|min:8'
 			)
 		);
 

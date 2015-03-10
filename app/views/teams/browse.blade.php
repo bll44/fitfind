@@ -7,6 +7,9 @@
 @section('content')
 
 <h2>All Teams</h2>
+@if($teams->count() < 1)
+<h3>No one else has created a team yet!</h3>
+@endif
 @foreach($teams as $team)
 
 @if( ! in_array($team->id, $my_teams))
